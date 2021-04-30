@@ -6,7 +6,13 @@ const logger = require('morgan');
 const livereload = require('livereload');
 const connectLivereload = require('connect-livereload');
 const mongoose = require('mongoose');
+const session = require('express-session');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const bcrypt = require('bcryptjs');
 require('dotenv').config({ path: `${__dirname}/.env.local` });
+
+const User = require('./models/user');
 
 const server = livereload.createServer();
 server.watch(`${__dirname}/public`);
@@ -15,6 +21,36 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/user');
 
 const app = express();
+
+// Set up passport
+passport.use(
+  new LocalStrategy((username, password, done) => {
+    User.findOne({ username }, (err, user) => {
+      if (err) {
+        return done(err);
+      }
+      if (!user) {
+        return done(null, false, { message: 'Incorrect username' });
+      }
+      bcrypt.compare(password, user.password, (err, res) => {
+        if (res) {
+          return done(null, user);
+        }
+        return done(null, false, { message: 'Incorrect password' });
+      });
+    });
+  }),
+);
+
+passport.serializeUser((user, done) => {
+  done(null, user.id);
+});
+
+passport.deserializeUser((id, done) => {
+  User.findById(id, (err, user) => {
+    done(err, user);
+  });
+});
 
 // Set up mongoose
 const mongoDB = `mongodb+srv://Aurelie:${process.env.MONGODB_PASSWORD}@cluster0.t6dqf.mongodb.net/members_only?retryWrites=true&w=majority`;
@@ -26,6 +62,7 @@ db.on('error', console.error.bind(console, 'MongoDB connection error: '));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
+app.use(session({ secret: process.env.SESSION_SECRET, resave: false, saveUninitialized: true }));
 app.use(connectLivereload());
 app.use(logger('dev'));
 app.use(express.json());
