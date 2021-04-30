@@ -14,6 +14,16 @@ exports.user_create_post = [
   // Validate and sanitize fields
   body('username', 'Username must be specified.').trim().isLength({ min: 1 }).escape(),
   body('password', 'Password must be specified.').trim().isLength({ min: 1 }).escape(),
+  body('confirmation')
+    .trim()
+    .isLength({ min: 1 })
+    .escape()
+    .withMessage('Password confirmation must be specified.')
+    .custom((value, { req }) => {
+      if (value !== req.body.password) {
+        return Promise.reject('Passwords do not match.');
+      }
+    }),
 
   // Check database to see if name is already taken
   (req, res, next) => {
