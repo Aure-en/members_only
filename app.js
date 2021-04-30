@@ -12,7 +12,7 @@ const server = livereload.createServer();
 server.watch(`${__dirname}/public`);
 
 const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
+const usersRouter = require('./routes/user');
 
 const app = express();
 
