@@ -10,7 +10,6 @@ const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
-const compression = require('compression');
 const helmet = require('helmet');
 require('dotenv').config({ path: `${__dirname}/.env.local` });
 
@@ -72,7 +71,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(compression());
 app.use(helmet());
 
 app.use((req, res, next) => {
