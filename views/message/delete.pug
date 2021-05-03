@@ -1,0 +1,14 @@
+extends ../layout
+
+block content
+  h1 Delete Message
+
+  div.card
+    div.card-body
+      h5.card-title #{message.title}
+      div.card-subtitle.mb-2.text-muted #{message.author.username} - #{format(new Date(message.timestamp), 'MM/dd/yyyy')}
+      p.card-text #{message.text}
+
+  form.d-flex.flex-column.my-3(method='POST' action='')
+    div Are you sure you want to delete this message ?
+    button.btn.btn-primary.my-3.align-self-center(type='submit') Delete

@@ -85,7 +85,6 @@ exports.user_create_post = [
 
 // Display User Join Form on GET
 exports.user_join_get = function (req, res) {
-  console.log(req.user);
   res.render('user/join');
 };
 
@@ -94,7 +93,7 @@ exports.user_join_post = [
   // Validate and sanitize fields
   body('password', 'Password must be specified').trim().isLength({ min: 1 }).escape(),
   body('password').custom((value) => {
-    if (value !== process.env.SECRET_PASSWORD) {
+    if (value !== process.env.CLUB_PASSWORD && value !== process.env.ADMIN_PASSWORD) {
       return Promise.reject('Sorry, this is not the right password.');
     }
     return true;
@@ -109,10 +108,17 @@ exports.user_join_post = [
     }
 
     // Right password, update the user and redirect.
-    User.findByIdAndUpdate(req.user.id, { membership: 'member' }, {}, (err) => {
-      if (err) return next(err);
-      res.redirect('/');
-    });
+    if (req.body.password === process.env.CLUB_PASSWORD) {
+      User.findByIdAndUpdate(req.user.id, { membership: 'member' }, {}, (err) => {
+        if (err) return next(err);
+        res.redirect('/');
+      });
+    } else if (req.body.password === process.env.ADMIN_PASSWORD) {
+      User.findByIdAndUpdate(req.user.id, { membership: 'admin' }, {}, (err) => {
+        if (err) return next(err);
+        res.redirect('/');
+      });
+    }
   },
 ];
 

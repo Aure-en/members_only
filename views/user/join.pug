@@ -2,6 +2,10 @@ extends ../layout
 
 block content
   h1 Join the Private Club
+  div Enter the password to become a regular club member, or enter the super secret password to become an administrator.
+  ul
+    li Regular club members are able to see authors of each message.
+    li Administrators are able to see everything and can delete messages.
 
   form(method='POST' action='')
     div.form-group

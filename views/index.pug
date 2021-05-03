@@ -9,10 +9,13 @@ block content
   each message in messages
     div.card
       div.card-body
-        div.card-title #{message.title}
+        h5.card-title #{message.title}
         div.card-subtitle.mb-2.text-muted
           if (currentUser && currentUser.membership !== 'user')
-            | #{message.author.username}
+            | #{message.author.username} - #{format(new Date(message.timestamp), 'MM/dd/yyyy')}
           else
-            | Secret Member
+            | Secret Member - Secret Date
         p.card-text #{message.text}
+
+        if (currentUser && currentUser.membership === 'admin')
+          a(href=`${message._id}/delete`) Delete

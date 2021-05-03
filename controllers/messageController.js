@@ -2,6 +2,7 @@ const async = require('async');
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
+const { format } = require('date-fns');
 const Message = require('../models/message');
 
 // Display Message Create Form on GET
@@ -39,10 +40,32 @@ exports.message_create_post = [
   },
 ];
 
+// List all messages
 exports.message_list = function (req, res, next) {
   Message.find().populate('author').exec((err, messages) => {
     if (err) return next(err);
-    res.render('index', { messages });
+    res.render('index', { messages, format });
   });
 };
 
+// Delete Message GET
+exports.message_delete_get = function (req, res, next) {
+  Message.findById(req.params.id).populate('author').exec((err, message) => {
+    if (err) return next(err);
+    if (!message) {
+      const err = new Error('Message not found');
+      err.status = 404;
+      return next(err);
+    }
+    // Successful so render
+    res.render('message/delete', { message, format });
+  });
+};
+
+// Delete Message POST
+exports.message_delete_post = function (req, res, next) {
+  Message.findByIdAndRemove(req.params.id, (err) => {
+    if (err) return next(err);
+    res.redirect('/');
+  });
+};

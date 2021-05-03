@@ -38,4 +38,10 @@ router.get('/create', messageController.message_create_get);
 // POST Create Message
 router.post('/create', messageController.message_create_post);
 
+// GET Delete Message
+router.get('/:id/delete', messageController.message_delete_get);
+
+// POST Delete Message
+router.post('/:id/delete', messageController.message_delete_post);
+
 module.exports = router;
