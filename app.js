@@ -10,7 +10,6 @@ const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
-const helmet = require('helmet');
 require('dotenv').config({ path: `${__dirname}/.env.local` });
 
 const User = require('./models/user');
@@ -71,7 +70,6 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(helmet());
 
 app.use((req, res, next) => {
   res.locals.currentUser = req.user;
