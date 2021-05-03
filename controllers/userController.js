@@ -90,12 +90,15 @@ exports.user_join_post = [
   // Validate and sanitize fields
   body('password', 'Password must be specified').trim().isLength({ min: 1 }).escape(),
   body('password').custom((value) => {
+    console.log(value === process.env.SECRET_PASSWORD);
     if (value !== process.env.SECRET_PASSWORD) {
       return Promise.reject('Sorry, this is not the right password.');
     }
+    return true;
   }),
   (req, res, next) => {
     const errors = validationResult(req);
+    console.log(errors);
 
     if (!errors.isEmpty()) {
       // There are errors, render the form with errors and previous input.
