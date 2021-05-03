@@ -10,6 +10,8 @@ const session = require('express-session');
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcryptjs');
+const compression = require('compression');
+const helmet = require('helmet');
 require('dotenv').config({ path: `${__dirname}/.env.local` });
 
 const User = require('./models/user');
@@ -52,7 +54,8 @@ passport.deserializeUser((id, done) => {
 });
 
 // Set up mongoose
-const mongoDB = `mongodb+srv://Aurelie:${process.env.MONGODB_PASSWORD}@cluster0.t6dqf.mongodb.net/members_only?retryWrites=true&w=majority`;
+const dev_db_url = `mongodb+srv://Aurelie:${process.env.MONGODB_PASSWORD}@cluster0.t6dqf.mongodb.net/members_only?retryWrites=true&w=majority`;
+const mongoDB = process.env.MONGODB_URI || dev_db_url;
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error: '));
@@ -70,6 +73,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(compression());
+app.use(helmet());
 
 app.use((req, res, next) => {
   res.locals.currentUser = req.user;

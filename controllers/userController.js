@@ -72,7 +72,7 @@ exports.user_create_post = [
             membership: 'user',
           }).save((err) => {
             if (err) return next(err);
-            res.redirect('user/login');
+            res.redirect('/login');
           });
         });
       },
