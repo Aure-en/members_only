@@ -34,4 +34,10 @@ router.get('/join', userController.user_join_get);
 // POST Join Private Club
 router.post('/join', userController.user_join_post);
 
+// GET Create Message
+router.get('/create', messageController.message_create_get);
+
+// POST Create Message
+router.post('/create', messageController.message_create_post);
+
 module.exports = router;

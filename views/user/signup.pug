@@ -1,15 +1,16 @@
-extends layout
+extends ../layout
 
 block content
-  h1 Log In
+  h1 Sign up
 
   form(method='POST' action='')
 
     -
-      let usernameError, passwordError;
+      let usernameError, passwordError, confirmationError;
       if (errors) {
         usernameError = errors.find((error) => error.param === 'username');
         passwordError = errors.find((error) => error.param === 'password');
+        confirmationError = errors.find((error) => error.param === 'confirmation');
       }
 
     div.form-group
@@ -24,4 +25,10 @@ block content
       if passwordError
         small.form-text.text-danger #{passwordError.msg}
 
-    button.btn.btn-primary(type='submit') Log in
+    div.form-group
+      label(for='confirmation') Password Confirmation
+      input.form-control#confirmation(type='password' name='confirmation' value=(user === undefined ? '' : user.confirmation))
+      if confirmationError
+        small.form-text.text-danger #{confirmationError.msg}
+
+    button.btn.btn-primary(type='submit') Sign up

@@ -6,19 +6,23 @@ const User = require('../models/user');
 
 // Display User Sign up Form on GET
 exports.user_create_get = function (req, res) {
-  res.render('signup');
+  res.render('user/signup');
 };
 
 // Display User Sign up Form on POST
 exports.user_create_post = [
 
   // Validate and sanitize fields
-  body('username', 'Username must be specified.').trim().isLength({ min: 1 }).escape(),
-  body('password', 'Password must be specified.').trim().isLength({ min: 1 }).escape(),
+  body('username')
+    .trim()
+    .isLength({ min: 1 })
+    .withMessage('Username must be specified.')
+    .isAlphanumeric()
+    .withMessage("Username's characters must be alphanumeric."),
+  body('password', 'Password must be specified.').trim().isLength({ min: 1 }),
   body('confirmation')
     .trim()
     .isLength({ min: 1 })
-    .escape()
     .withMessage('Password confirmation must be specified.')
     .custom((value, { req }) => {
       if (value !== req.body.password) {
@@ -52,7 +56,7 @@ exports.user_create_post = [
       function (callback) {
         if (!errors.isEmpty()) {
           // There are errors. Render form again with values and errors.
-          res.render('signup', {
+          res.render('user/signup', {
             user: req.body,
             errors: errors.array(),
           });
@@ -82,7 +86,7 @@ exports.user_create_post = [
 // Display User Join Form on GET
 exports.user_join_get = function (req, res) {
   console.log(req.user);
-  res.render('join');
+  res.render('user/join');
 };
 
 // Display User Join Form on POST
@@ -90,7 +94,6 @@ exports.user_join_post = [
   // Validate and sanitize fields
   body('password', 'Password must be specified').trim().isLength({ min: 1 }).escape(),
   body('password').custom((value) => {
-    console.log(value === process.env.SECRET_PASSWORD);
     if (value !== process.env.SECRET_PASSWORD) {
       return Promise.reject('Sorry, this is not the right password.');
     }
@@ -98,11 +101,10 @@ exports.user_join_post = [
   }),
   (req, res, next) => {
     const errors = validationResult(req);
-    console.log(errors);
 
     if (!errors.isEmpty()) {
       // There are errors, render the form with errors and previous input.
-      res.render('join', { errors: errors.array(), password: req.body.password });
+      res.render('user/join', { errors: errors.array(), password: req.body.password });
       return;
     }
 
@@ -116,7 +118,7 @@ exports.user_join_post = [
 
 // Display User Log in Form on GET
 exports.user_login_get = function (req, res) {
-  res.render('login');
+  res.render('user/login');
 };
 
 // Display User Log in Form on POST

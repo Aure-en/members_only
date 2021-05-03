@@ -18,7 +18,6 @@ const server = livereload.createServer();
 server.watch(`${__dirname}/public`);
 
 const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/user');
 
 const app = express();
 
@@ -84,7 +83,6 @@ server.server.once('connection', () => {
 });
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

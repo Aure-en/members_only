@@ -1,0 +1,27 @@
+extends ../layout
+
+block content
+  h1 Create a new message
+
+  form(method='POST' action='')
+
+    -
+      let titleError, textError;
+      if (errors) {
+        titleError = errors.find((error) => error.param === 'title');
+        textError = errors.find((error) => error.param === 'text');
+      }
+
+    div.form-group
+      label(for='title') Title
+      input.form-control#username(type='text' name='title' value=(message === undefined ? '' : message.title))
+      if titleError
+        small.form-text.text-danger #{titleError.msg}
+
+    div.form-group
+      label(for='text') Text
+      input.form-control#password(type='text' name='text' value=(message === undefined ? '' : message.password))
+      if textError
+        small.form-text.text-danger #{textError.msg}
+
+    button.btn.btn-primary(type='submit') Post
