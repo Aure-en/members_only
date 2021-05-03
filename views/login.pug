@@ -1,0 +1,27 @@
+extends layout
+
+block content
+  h1 Log In
+
+  form(method='POST' action='')
+
+    -
+      let usernameError, passwordError;
+      if (errors) {
+        usernameError = errors.find((error) => error.param === 'username');
+        passwordError = errors.find((error) => error.param === 'password');
+      }
+
+    div.form-group
+      label(for='username') Username
+      input.form-control#username(type='text' name='username' value=(user === undefined ? '' : user.username))
+      if usernameError
+        small.form-text.text-danger #{usernameError.msg}
+
+    div.form-group
+      label(for='password') Password
+      input.form-control#password(type='password' name='password' value=(user === undefined ? '' : user.password))
+      if passwordError
+        small.form-text.text-danger #{passwordError.msg}
+
+    button.btn.btn-primary(type='submit') Log in
