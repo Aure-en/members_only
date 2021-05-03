@@ -6,9 +6,7 @@ const userController = require('../controllers/userController');
 const messageController = require('../controllers/messageController');
 
 /* GET home page. */
-router.get('/', (req, res, next) => {
-  res.render('index', { title: 'Express' });
-});
+router.get('/', messageController.message_list);
 
 // GET Sign up
 router.get('/signup', userController.user_create_get);

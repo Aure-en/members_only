@@ -38,3 +38,11 @@ exports.message_create_post = [
     });
   },
 ];
+
+exports.message_list = function (req, res, next) {
+  Message.find().populate('author').exec((err, messages) => {
+    if (err) return next(err);
+    res.render('index', { messages });
+  });
+};
+
