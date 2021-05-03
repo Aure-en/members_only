@@ -1,21 +1,36 @@
 extends layout
 
 block content
+  div.d-flex.flex-column
+    div.align-self-center.text-center.mb-5
+      h2 Welcome #{currentUser ? currentUser.username : 'Guest'}
+      if (!currentUser || currentUser.membership === 'user')
+        | Become a #{' '}
+        a(href=`${currentUser ? '/join' : '/signup'}`) Club Member
+        |  to see who posted all those messages.
+      else if (currentUser.membership === 'member')
+        | You currently are a regular club member. You can see authors messages.
+      else if (currentUser.membership === 'administrator')
+        | Congratulations, you have reached the highest rank of the club.
+        br
+        | As an administrator, you can delete messages.
 
-  div Welcome #{currentUser ? currentUser.username : 'Guest'}.
-  if (!currentUser || currentUser.membership === 'user')
-    | Become a Club Member to see who posted all those messages.
+  div.container-fluid
+    div.row
+      div.col-12.col-md-9
+        each message in messages
+          div.card.my-3
+            div.card-body
+              h5.card-title #{message.title}
+              div.card-subtitle.mb-2.text-muted
+                if (currentUser && currentUser.membership !== 'user')
+                  | #{message.author.username} - #{format(new Date(message.timestamp), 'MM/dd/yyyy')}
+                else
+                  | Secret Member - Secret Date
+              p.card-text(style='white-space: pre-wrap') #{message.text}
 
-  each message in messages
-    div.card
-      div.card-body
-        h5.card-title #{message.title}
-        div.card-subtitle.mb-2.text-muted
-          if (currentUser && currentUser.membership !== 'user')
-            | #{message.author.username} - #{format(new Date(message.timestamp), 'MM/dd/yyyy')}
-          else
-            | Secret Member - Secret Date
-        p.card-text #{message.text}
+              if (currentUser && currentUser.membership === 'admin')
+                a(href=`${message._id}/delete`) Delete
 
-        if (currentUser && currentUser.membership === 'admin')
-          a(href=`${message._id}/delete`) Delete
+      div.col-12.col-md-3
+        include statistics.pug

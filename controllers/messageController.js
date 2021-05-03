@@ -4,6 +4,34 @@ const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const { format } = require('date-fns');
 const Message = require('../models/message');
+const User = require('../models/user');
+
+// List all messages
+exports.message_list = function (req, res, next) {
+  async.parallel({
+    users(callback) {
+      User.countDocuments({ membership: 'user' }, callback);
+    },
+    members(callback) {
+      User.countDocuments({ membership: 'member' }, callback);
+    },
+    admins(callback) {
+      User.countDocuments({ membership: 'admin' }, callback);
+    },
+    messages(callback) {
+      Message.find().populate('author').exec(callback);
+    },
+  }, (err, results) => {
+    if (err) return next(err);
+    res.render('index', {
+      users: results.users,
+      members: results.members,
+      admins: results.admins,
+      messages: results.messages,
+      format,
+    });
+  });
+};
 
 // Display Message Create Form on GET
 exports.message_create_get = function (req, res) {
@@ -39,14 +67,6 @@ exports.message_create_post = [
     });
   },
 ];
-
-// List all messages
-exports.message_list = function (req, res, next) {
-  Message.find().populate('author').exec((err, messages) => {
-    if (err) return next(err);
-    res.render('index', { messages, format });
-  });
-};
 
 // Delete Message GET
 exports.message_delete_get = function (req, res, next) {

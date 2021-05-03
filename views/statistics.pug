@@ -1,0 +1,10 @@
+div.card.my-3
+  div.card-body
+    h5.card-title Members Only
+    p.card-text We currently count...
+      ul
+        li #{users} registered user#{users > 1 ? 's' : ''}
+        li #{members} regular club member#{members > 1 ? 's' : ''}
+        li #{admins} administrator#{admins > 1 ? 's' : ''}
+
+      div Our users have posted a total of #{messages.length} message#{messages.length > 1 ? 's' : ''}.

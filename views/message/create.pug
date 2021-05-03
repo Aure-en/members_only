@@ -20,7 +20,7 @@ block content
 
     div.form-group
       label(for='text') Text
-      input.form-control#password(type='text' name='text' value=(message === undefined ? '' : message.password))
+      textarea.form-control#password(type='text' name='text' rows=5 value=(message === undefined ? '' : message.password))
       if textError
         small.form-text.text-danger #{textError.msg}
 

@@ -72,10 +72,7 @@ exports.user_create_post = [
             membership: 'user',
           }).save((err) => {
             if (err) return next(err);
-            passport.authenticate('local', {
-              successRedirect: '/',
-              failureRedirect: '/',
-            });
+            res.redirect('user/login');
           });
         });
       },
